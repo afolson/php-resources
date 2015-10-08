@@ -1,5 +1,7 @@
 # PHPamily
 
+[![Join the chat at https://gitter.im/afolson/php-resources](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/afolson/php-resources?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 The aim of this project is to show the connection between people, projects, 
 companies, podcasts and all the other bits and pieces of the PHP-Family.
 
