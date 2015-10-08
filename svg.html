@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+<style>
+
+    .node {
+        stroke: #fff;
+        stroke-width: 1.5px;
+    }
+
+    .link {
+        stroke: #999;
+        stroke-opacity: .6;
+    }
+
+</style>
+
+<body>
+<link rel="stylesheet" href="bower_components/tipsy/src/stylesheets/tipsy.css"/>
+<script src="bower_components/d3/d3.js"></script>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/tipsy/src/javascripts/jquery.tipsy.js"></script>
+<script>
+
+    var width = 960, height = 500;
+
+    var color = d3.scale.category20();
+
+    var force = d3.layout.force()
+            .charge(-120)
+            .linkDistance(30)
+            .size([width, height]);
+
+    var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    var nodeMap = {};
+    var linkMap = {};
+
+    drawContentByUri = function(uri) {
+        d3.json(uri, function (error, graph) {
+            if (error) {
+                console.log(error);
+                throw error;
+            }
+
+            graph.nodes.forEach(function(x) {
+                nodeMap[x.name] = x;
+            });
+            graph.links = graph.links.map(function(x) {
+                var link = {
+                    source: nodeMap[x.source],
+                    target: nodeMap[x.target],
+                    value: 1.0,
+                };
+                linkMap[link.source.name + '_' + link.target.name] = link;
+
+                return link;
+            });
+
+            var links = force.links();
+            for(i in linkMap) {
+                x = linkMap[i];
+                console.log(nodeMap[x.source.name]);
+                link = {
+                    source : nodeMap[x.source.name],
+                    target : nodeMap[x.target.name],
+                    value : 1
+                };
+                if (! links.indexOf(link)) {
+                    links.push(link);
+                }
+
+            }
+
+            console.log(force.nodes());
+            var nodes = force.nodes();
+            for (i in nodeMap) {
+                x = nodeMap[i];
+                if (! nodes.indexOf(x)) {
+                    nodes.push(x);
+                }
+            }
+
+            console.log(nodes);
+            console.log(links);
+            console.log(graph);
+
+            force
+                    .nodes(graph.nodes)
+                    .links(graph.links)
+                    .start();
+
+            tickmap = d3.map();
+            console.log(force.links());
+
+            var link = svg.selectAll(".link")
+                    .data(graph.links, function(d){return d.target.name + '_' + d.source.name});
+
+            link.attr('class', 'link update');
+
+            link.enter().append("line")
+                    .attr("class", "link")
+                    .style("stroke-fill", function (d) {
+                        return color(d.type);
+                    })
+                    .style("stroke-width", 2)
+                    ;
+
+            var node = svg.selectAll(".node")
+                    .data(graph.nodes, function(d){return d.name});
+
+            node.attr('class', 'update');
+
+            node.enter().append("circle")
+                    .attr("class", "node")
+                    .attr("r", 5)
+                    .style("fill", function (d) {
+                        return color(d.type);
+                    })
+                    .call(force.drag);
+
+
+            node.append("title")
+                    .text(function (d) {
+                        return d.name;
+                    });
+
+            force.on("tick", function () {
+                link.attr("x1", function (d) {
+                            return d.source.x;
+                        })
+                        .attr("y1", function (d) {
+                            return d.source.y;
+                        })
+                        .attr("x2", function (d) {
+                            return d.target.x;
+                        })
+                        .attr("y2", function (d) {
+                            return d.target.y;
+                        });
+
+                node.attr("cx", function (d) {
+                            return d.x;
+                        })
+                        .attr("cy", function (d) {
+                            return d.y;
+                        });
+            });
+
+            node.on('click', function(){
+                drawContentByUri("PHPamily3.json");
+            });
+
+            $('svg circle').tipsy({
+                gravity : 'se',
+                html    : true,
+                title   : function () {
+                    var d = this.__data__;
+                    return 'Hi there! I am ' + d.name;
+                }
+            });
+
+            $('svg line').tipsy({
+                gravity : 'se',
+                html    : true,
+                title   : function () {
+                    var d = this.__data__;
+                    return 'Hi there! I am ' + d.value;
+                }
+            });
+        });
+    }
+    drawContentByUri("PHPamily2.json");
+
+
+</script>

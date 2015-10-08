@@ -1,0 +1,27 @@
+{
+    "nodes" : [
+        {"name" : "Andreas Heigl", "type" : "person", "weight": 1},
+        {"name" : "joind.in", "type" : "project", "weight": 1},
+        {"name" : "Zend-LDAP", "type" : "project", "weight": 1},
+        {"name" : "Lorna Mitchell", "type" : "person", "weight": 1},
+        {"name" : "Rob Allen", "type" : "person", "weight": 1},
+        {"name" : "19 Feet", "type" : "company", "weight": 1},
+        {"name" : "LornaJane Inc", "type" : "company", "weight": 1},
+        {"name" : "Frankfurt", "type" : "usergroup", "weight": 1}
+    ],
+    "links" : [
+        {"source" : "Andreas Heigl", "target": "joind.in", "type" : "contributor"},
+        {"source" : "Andreas Heigl", "target": "Zend-LDAP", "type" : "maintainer"},
+        {"source" : "Andreas Heigl", "target": "Frankfurt", "type" : "maintainer"},
+        {"source" : "Andreas Heigl", "target": "Lorna Mitchell", "type" : "follow-twitter"},
+        {"source" : "Andreas Heigl", "target": "Rob Allen", "type" : "follow-twitter"},
+        {"source" : "Lorna Mitchell", "target": "joind.in", "type" : "maintainer"},
+        {"source" : "Lorna Mitchell", "target": "Andreas Heigl", "type" : "follow-twitter"},
+        {"source" : "Lorna Mitchell", "target": "Rob Allen", "type" : "follow-twitter"},
+        {"source" : "Lorna Mitchell", "target": "LornaJane Inc", "type" : "owner"},
+        {"source" : "Rob Allen", "target": "joind.in", "type" : "maintainer"},
+        {"source" : "Rob Allen", "target": "Andreas Heigl", "type" : "follow-twitter"},
+        {"source" : "Rob Allen", "target": "Lorna Mitchell", "type" : "follow-twitter"},
+        {"source" : "Rob Allen", "target": "19 Feet", "type" : "owner"}
+    ]
+}

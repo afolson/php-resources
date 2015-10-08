@@ -1,0 +1,85 @@
+[
+    {
+        "name":"Andreas Heigl",
+        "id": "heiglandreas",
+        "type": "person",
+        "connection":[{
+            "target":"zendframework/zend-ldap",
+            "type": "maintainer"
+        },{
+            "target":"heiglandreas/authLdap",
+            "type": "maintainer"
+        },{
+            "target":"joindin/joindin",
+            "type": "contributor"
+        }]
+    },{
+        "name":"joind.in",
+        "id": "joindin/joindin",
+        "type": "project",
+        "connection":[{
+            "target":"lornajane",
+            "type": "maintainer"
+        },{
+            "target":"akrabat",
+            "type": "maintainer"
+        }]
+    },{
+        "name":"Zend-LDAP",
+        "id": "zendframework/zend-ldap",
+        "type": "project",
+        "connection":[]
+    },{
+        "name":"Lorna Mitchell",
+        "id": "lornajane",
+        "type": "person",
+        "connection":[{
+            "target":"joindin/joindin",
+            "type": "maintainer"
+        },{
+            "target":"lornajaneinc",
+            "type": "owner"
+        },{
+            "target":"akrabat",
+            "type": "friend"
+        }]
+    },{
+        "name":"Rob Allen",
+        "id": "akrabat",
+        "type": "person",
+        "connection":[{
+            "target":"zendframework/zend-ldap",
+            "type": "contributor"
+        },{
+            "target":"19ft",
+            "type": "owner"
+        },{
+            "target":"joindin/joindin",
+            "type": "maintainer"
+        }]
+    },{
+        "name":"19 Feet",
+        "id": "19ft",
+        "type": "company",
+        "connection":[{
+            "target":"akrabat",
+            "type": "owner"
+        }]
+    },{
+        "name":"Lorna Jane inc.",
+        "id": "lornajane",
+        "type": "company",
+        "connection":[{
+            "target":"lornajane",
+            "type": "owner"
+        }]
+    },{
+        "name":"PHP-Usergroup FRankfurt",
+        "id": "phpugffm",
+        "type": "usergroup",
+        "connection":[{
+            "target":"heiglandreas",
+            "type": "maintainer"
+        }]
+    }
+]

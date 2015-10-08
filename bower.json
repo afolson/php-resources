@@ -1,0 +1,22 @@
+{
+  "name": "PHPamily",
+  "version": "0.0.0",
+  "authors": [
+    "Andreas Heigl <andreas@heigl.org>"
+  ],
+  "description": "A home for the PHPamily",
+  "main": "index,html",
+  "keywords": [
+    "php",
+    "family"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "nodes":[{
+    "name":"Andreas Heigl",
+    "type":"person"
+  },{
+    "name":"PHPamily",
+    "type":"project"
+  },{
+    "name":"Amanda Follson",
+    "type":"person"
+  },{
+    "name":"Matthew Setter",
+    "type":"person"
+  },{
+    "name":"Free the Geek",
+    "type":"podcast"
+  }],
+  "links":[
+    {"source":"Andreas Heigl","target":"PHPamily","type":"contributor"},
+    {"source":"Andreas Heigl","target":"Amanda Follson","type":"follow-twitter"},
+    {"source":"Andreas Heigl","target":"Matthew Setter","type":"follow-twitter"},
+    {"source":"Amanda Follson","target":"PHPamily","type":"maintainer"},
+    {"source":"Matthew Setter","target":"PHPamily","type":"maintainer"},
+    {"source":"Matthew Setter","target":"Free the Geek","type":"maintainer"}
+  ]
+}
