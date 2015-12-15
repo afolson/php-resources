@@ -39,6 +39,9 @@
 
     var nodeMap = {};
     var linkMap = {};
+    var myNodes = [];
+    var myLinks = [];
+
 
     drawContentByUri = function(uri) {
         d3.json(uri, function (error, graph) {
@@ -50,57 +53,58 @@
             graph.nodes.forEach(function(x) {
                 nodeMap[x.name] = x;
             });
-            graph.links = graph.links.map(function(x) {
-                var link = {
-                    source: nodeMap[x.source],
-                    target: nodeMap[x.target],
-                    value: 1.0,
-                };
-                linkMap[link.source.name + '_' + link.target.name] = link;
 
-                return link;
-            });
-
-            var links = force.links();
-            for(i in linkMap) {
-                x = linkMap[i];
-                console.log(nodeMap[x.source.name]);
-                link = {
-                    source : nodeMap[x.source.name],
-                    target : nodeMap[x.target.name],
-                    value : 1
-                };
-                if (! links.indexOf(link)) {
-                    links.push(link);
-                }
-
-            }
-
-            console.log(force.nodes());
-            var nodes = force.nodes();
-            for (i in nodeMap) {
-                x = nodeMap[i];
-                if (! nodes.indexOf(x)) {
-                    nodes.push(x);
+            myNodes = force.nodes();
+            myLinks = force.links();
+            for (i in graph.nodes) {
+                x = graph.nodes[i];
+                result = myNodes.filter(function(k){
+                    if (x.name == k.name) {
+                        return true;
+                    }
+                    return false;
+                });
+                if (result.length == 0) {
+                    myNodes.push(x);
                 }
             }
 
-            console.log(nodes);
-            console.log(links);
-            console.log(graph);
+            for(i in graph.links) {
+                x = graph.links[i];
+                result = myLinks.filter(function(k){
+                    if (! k.source || !k.target) {
+                        return false;
+                    }
+                    return x.source == k.source.name && x.target == k.target.name;
+                });
+                if (result.length == 0) {
+
+                    target = myNodes.filter(function(k){
+                        return k.name == this.target;
+                    }.bind(x));
+                    source = myNodes.filter(function(k){
+                        return k.name == this.source;
+                    }.bind(x));
+                    link = {
+                        source : source[0],
+                        target : target[0],
+                        value : 1
+                    };
+                    myLinks.push(link);
+                }
+            }
 
             force
-                    .nodes(graph.nodes)
-                    .links(graph.links)
+                    .nodes(myNodes)
+                    .links(myLinks)
                     .start();
 
             tickmap = d3.map();
-            console.log(force.links());
 
             var link = svg.selectAll(".link")
-                    .data(graph.links, function(d){return d.target.name + '_' + d.source.name});
+                    .data(myLinks, function(d){return d.target.name + '_' + d.source.name});
 
-            link.attr('class', 'link update');
+           // link.attr('class', 'link update');
 
             link.enter().append("line")
                     .attr("class", "link")
@@ -111,7 +115,7 @@
                     ;
 
             var node = svg.selectAll(".node")
-                    .data(graph.nodes, function(d){return d.name});
+                    .data(myNodes, function(d){return d.name});
 
             node.attr('class', 'update');
 
