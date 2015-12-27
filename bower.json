@@ -18,5 +18,11 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6",
+    "d3": "~3.5.12",
+    "jquery": "~2.1.4",
+    "tipsy": "~0.1.7"
+  }
 }

@@ -6,13 +6,40 @@
 <style>
 
     .node {
-        stroke: #fff;
-        stroke-width: 1.5px;
+        stroke:rgb(0,0,0);
+        stroke-width: 0.5px;
+    }
+
+    .node.project {
+        fill: rgb(255,128,128);
+    }
+
+    .node.person {
+        fill: rgb(128,255,128);
+    }
+
+    .node.company {
+        fill: rgb(128,128,255);
+    }
+
+    .node.usergroup {
+        fill: rgb(120,48,25);
+    }
+
+    .node.podcast {
+        fill: rgb(255,255,255);
     }
 
     .link {
         stroke: #999;
         stroke-opacity: .6;
+    }
+
+    html, body {
+        width: 100%;
+        height:100%;
+        margin: 0%;
+        padding: 0%;
     }
 
 </style>
@@ -24,112 +51,24 @@
 <script src="bower_components/tipsy/src/javascripts/jquery.tipsy.js"></script>
 <script>
 
-    var width = 960, height = 500;
+    var width = $(window).width(), height = $(window).height();
 
     var color = d3.scale.category20();
-
-    var force = d3.layout.force()
-            .charge(-120)
-            .linkDistance(30)
-            .size([width, height]);
 
     var svg = d3.select("body").append("svg")
             .attr("width", width)
             .attr("height", height);
 
-    var nodeMap = {};
-    var linkMap = {};
+    var node = svg.selectAll('.node'),
+        link = svg.selectAll('.link');
 
-    drawContentByUri = function(uri) {
-        d3.json(uri, function (error, graph) {
-            if (error) {
-                console.log(error);
-                throw error;
-            }
+    console.log(link);
 
-            graph.nodes.forEach(function(x) {
-                nodeMap[x.name] = x;
-            });
-            graph.links = graph.links.map(function(x) {
-                var link = {
-                    source: nodeMap[x.source],
-                    target: nodeMap[x.target],
-                    value: 1.0,
-                };
-                linkMap[link.source.name + '_' + link.target.name] = link;
-
-                return link;
-            });
-
-            var links = force.links();
-            for(i in linkMap) {
-                x = linkMap[i];
-                console.log(nodeMap[x.source.name]);
-                link = {
-                    source : nodeMap[x.source.name],
-                    target : nodeMap[x.target.name],
-                    value : 1
-                };
-                if (! links.indexOf(link)) {
-                    links.push(link);
-                }
-
-            }
-
-            console.log(force.nodes());
-            var nodes = force.nodes();
-            for (i in nodeMap) {
-                x = nodeMap[i];
-                if (! nodes.indexOf(x)) {
-                    nodes.push(x);
-                }
-            }
-
-            console.log(nodes);
-            console.log(links);
-            console.log(graph);
-
-            force
-                    .nodes(graph.nodes)
-                    .links(graph.links)
-                    .start();
-
-            tickmap = d3.map();
-            console.log(force.links());
-
-            var link = svg.selectAll(".link")
-                    .data(graph.links, function(d){return d.target.name + '_' + d.source.name});
-
-            link.attr('class', 'link update');
-
-            link.enter().append("line")
-                    .attr("class", "link")
-                    .style("stroke-fill", function (d) {
-                        return color(d.type);
-                    })
-                    .style("stroke-width", 2)
-                    ;
-
-            var node = svg.selectAll(".node")
-                    .data(graph.nodes, function(d){return d.name});
-
-            node.attr('class', 'update');
-
-            node.enter().append("circle")
-                    .attr("class", "node")
-                    .attr("r", 5)
-                    .style("fill", function (d) {
-                        return color(d.type);
-                    })
-                    .call(force.drag);
-
-
-            node.append("title")
-                    .text(function (d) {
-                        return d.name;
-                    });
-
-            force.on("tick", function () {
+    var force = d3.layout.force()
+            .charge(-120)
+            .linkDistance(30)
+            .size([width, height])
+            .on('tick', function () {
                 link.attr("x1", function (d) {
                             return d.source.x;
                         })
@@ -151,6 +90,91 @@
                         });
             });
 
+    var nodeMap = {};
+    var linkMap = {};
+    var myNodes = [];
+    var myLinks = [];
+
+
+    drawContentByUri = function(uri) {
+        d3.json(uri, function (error, graph) {
+            if (error) {
+                console.log(error);
+                throw error;
+            }
+
+            graph.nodes.forEach(function(x) {
+                nodeMap[x.name] = x;
+            });
+
+            myNodes = force.nodes();
+            myLinks = force.links();
+            for (i in graph.nodes) {
+                x = graph.nodes[i];
+                result = myNodes.filter(function(k){
+                    if (x.name == k.name) {
+                        return true;
+                    }
+                    return false;
+                });
+                if (result.length == 0) {
+                    myNodes.push(x);
+                }
+            }
+
+            for(i in graph.links) {
+                x = graph.links[i];
+                result = myLinks.filter(function(k){
+                    if (! k.source || !k.target) {
+                        return false;
+                    }
+                    return x.source == k.source.name && x.target == k.target.name;
+                });
+                if (result.length == 0) {
+
+                    target = myNodes.filter(function(k){
+                        return k.name == this.target;
+                    }.bind(x));
+                    source = myNodes.filter(function(k){
+                        return k.name == this.source;
+                    }.bind(x));
+                    mlink = {
+                        source : source[0],
+                        target : target[0],
+                        value : 1
+                    };
+                    myLinks.push(mlink);
+                }
+            }
+
+            force
+                    .nodes(myNodes)
+                    .links(myLinks)
+                    .start();
+
+            tickmap = d3.map();
+console.log(link);
+            link = link.data(force.links(), function(d){
+                return d.target.name + '_' + d.source.name;
+            });
+
+            link.enter().insert("line", '.node')
+                    .attr("class", "link");
+            link.exit().remove();
+
+            node = node.data(force.nodes(), function(d){
+                return d.name;
+            });
+
+            node.enter().append("circle")
+                    .attr("class", function(d) {
+                        return "node " + d.type;
+                    })
+                    .attr("r", 5);
+            node.exit().remove();
+
+            force.start();
+
             node.on('click', function(){
                 drawContentByUri("PHPamily3.json");
             });
@@ -164,17 +188,24 @@
                 }
             });
 
-            $('svg line').tipsy({
-                gravity : 'se',
-                html    : true,
-                title   : function () {
-                    var d = this.__data__;
-                    return 'Hi there! I am ' + d.value;
-                }
-            });
         });
     }
     drawContentByUri("PHPamily2.json");
 
+//    $('svg line').tipsy({
+//        gravity : 'se',
+//        html    : true,
+//        title   : function () {
+//            var d = this.__data__;
+//            return 'Hi there! I am ' + d.value;
+//        }
+//    });
+
+    $(window).on('resize', function(e){
+        d3.select("svg")
+            .attr('width', $(window).width())
+            .attr('height', $(window).height());
+        d3.layout.force().start();
+    });
 
 </script>
