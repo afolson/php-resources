@@ -35,6 +35,13 @@
         stroke-opacity: .6;
     }
 
+    html, body {
+        width: 100%;
+        height:100%;
+        margin: 0%;
+        padding: 0%;
+    }
+
 </style>
 
 <body>
@@ -44,7 +51,7 @@
 <script src="bower_components/tipsy/src/javascripts/jquery.tipsy.js"></script>
 <script>
 
-    var width = 960, height = 500;
+    var width = $(window).width(), height = $(window).height();
 
     var color = d3.scale.category20();
 
@@ -181,27 +188,24 @@ console.log(link);
                 }
             });
 
-
         });
     }
     drawContentByUri("PHPamily2.json");
 
-    $('svg circle').tipsy({
-        gravity : 'se',
-        html    : true,
-        title   : function () {
-            var d = this.__data__;
-            return 'Hi there! I am ' + d.name;
-        }
-    });
+//    $('svg line').tipsy({
+//        gravity : 'se',
+//        html    : true,
+//        title   : function () {
+//            var d = this.__data__;
+//            return 'Hi there! I am ' + d.value;
+//        }
+//    });
 
-    $('svg line').tipsy({
-        gravity : 'se',
-        html    : true,
-        title   : function () {
-            var d = this.__data__;
-            return 'Hi there! I am ' + d.value;
-        }
+    $(window).on('resize', function(e){
+        d3.select("svg")
+            .attr('width', $(window).width())
+            .attr('height', $(window).height());
+        d3.layout.force().start();
     });
 
 </script>
